@@ -8,16 +8,15 @@ class Triangle : Figure
 {
 public:
     Triangle();
-    int recognition(QVector<QPair<int, int>>& points) override;
+    QVector<QPair<int, int> > recognition(const QVector<QPair<int, int>>& points) override;
 
 protected:
-    QPair<int, int> recognitionDirection(const QVector<QPair<int, int>>& points) override;
 private:
 
     static int state; //уже внутри
 //    static int globalState; //как была начата фигура
 
-    QPair<int, int> directionBegin;
+    //QPair<int, int> directionBegin;
     void stateMachine(int signal);
 
 };

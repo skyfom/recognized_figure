@@ -13,13 +13,14 @@ class PaintScene : public QGraphicsScene
 public:
     explicit PaintScene(QObject *parent = nullptr);
     ~PaintScene();
+    void paintFigure(const QVector<QPair<int, int>>&);
 
 private:
     QPointF previousPoint;
 
 signals:
     void pressMouseSignal(QVector<QPair<int, int>>&);
-    void releaseMouseSignal(QVector<QPair<int, int>>&);
+    void releaseMouseSignal(const QVector<QPair<int, int>>&);
 private:
 
     void mousePressEvent(QGraphicsSceneMouseEvent * event);

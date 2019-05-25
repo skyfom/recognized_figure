@@ -4,15 +4,19 @@
 #include <QVector>
 #include <QPair>
 
+enum figure {rectangle, circle, line, triangle};
+
 class Figure
 {
 public:
     Figure();
     virtual ~Figure();
-    virtual int recognition(QVector<QPair<int, int>>& points) = 0;
+    virtual QVector<QPair<int, int>> recognition(const QVector<QPair<int, int>>& points);
 
 protected:
+
     virtual QPair<int, int> recognitionDirection(const QVector<QPair<int, int>>& points);
+    QVector<QPair<int, int>> rightFigure(const QVector<QPair<int, int>>&);
     int authenticity;
     static int state; //уже внутри
     static int globalState; //как была начата фигура

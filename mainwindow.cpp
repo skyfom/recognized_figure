@@ -12,19 +12,29 @@ MainWindow::MainWindow(QWidget *parent) :
     timer = new QTimer();
     connect(timer, &QTimer::timeout, this, &MainWindow::slotTimer);
     connect(scene, SIGNAL(pressMouseSignal(QVector<QPair<int, int>>&)), this, SLOT(pressMouseSlot(QVector<QPair<int, int>>&)));
-    connect(scene, SIGNAL(releaseMouseSignal(QVector<QPair<int, int>>&)), this, SLOT(releaseMouseSlot(QVector<QPair<int, int>>&)));
+    connect(scene, SIGNAL(releaseMouseSignal(const QVector<QPair<int, int>>&)), this, SLOT(releaseMouseSlot(const QVector<QPair<int, int>>&)));
     timer->start(100);
+    fig = new Figure();
+}
+
+void MainWindow::paintFigure(const QVector<QPair<int, int> > &points)
+{
+    scene->clear();
+    scene->paintFigure(points);
 }
 
 void MainWindow::pressMouseSlot(QVector<QPair<int, int>>& points)
 {
     scene->clear();
     points.clear();
+    fig = new Figure();
 }
 
-void MainWindow::releaseMouseSlot(QVector<QPair<int, int>>& points)
+void MainWindow::releaseMouseSlot(const QVector<QPair<int, int>>& points)
 {
-    qDebug() << points;
+
+    QVector<QPair<int, int>> newFig = fig->recognition(points);
+    this->paintFigure(newFig);
 }
 
 MainWindow::~MainWindow()
