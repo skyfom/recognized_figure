@@ -26,10 +26,16 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    paintscene.cpp \
+    triangle.cpp \
+    figure.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    paintscene.h \
+    triangle.h \
+    figure.h
 
 FORMS += \
         mainwindow.ui
