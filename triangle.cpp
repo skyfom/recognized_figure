@@ -10,7 +10,6 @@ Triangle::Triangle()
 
 QVector<QPair<int, int> > Triangle::recognition(const QVector<QPair<int, int> > &points)
 {
-    authenticity = 0;
     recognitionDirection(points);
     if (directionBegin.first == -1 || directionBegin.second == -1)
     {
@@ -22,6 +21,8 @@ QVector<QPair<int, int> > Triangle::recognition(const QVector<QPair<int, int> > 
     }
     return points;
 }
+
+
 
 void Triangle::stateMachine(int signal)
 {

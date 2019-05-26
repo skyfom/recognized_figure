@@ -32,7 +32,7 @@ void MainWindow::pressMouseSlot(QVector<QPair<int, int>>& points)
 
 void MainWindow::releaseMouseSlot(const QVector<QPair<int, int>>& points)
 {
-
+    qDebug() << points;
     QVector<QPair<int, int>> newFig = fig->recognition(points);
     this->paintFigure(newFig);
 }
