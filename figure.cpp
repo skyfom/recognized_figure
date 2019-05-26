@@ -1,5 +1,7 @@
 #include "figure.h"
 #include <QDebug>
+#include <math.h>
+
 Figure::Figure()
 {
 
@@ -32,30 +34,118 @@ QVector<QPair<int, int>> Figure::rightFigure(const QVector<QPair<int, int>> &poi
  * 1 -
  */
 
+bool Figure::isEqual(double a, double b)
+{
+    double epsilon = 0.0000001;
+    if (std::fabs(a - b) < epsilon)
+    {
+        return true;
+    }
+    return false;
+}
+
+QVector<QPair<double, double>> Figure::getSinVector(const vector_points &points)
+{
+    QVector<QPair<double, double>> pointsSin;
+    for (int i = 0; i < points.size(); i++)
+    {
+        QPair<double, double> point;
+        point.first = sin(points[i].first * PI / 180.0);
+        point.second = sin(points[i].second * PI / 180.0);
+        pointsSin.append(point);
+    }
+    return pointsSin;
+}
+
+bool Figure::isolation(const vector_points &points)
+{
+    //если точка конца лежит в окрестости точки начала
+    int x_okr = 40;
+    int y_okr = 40;
+    if (std::abs(points[0].first - points[points.size()-1].first) <= x_okr &&
+            std::abs(points[0].second - points[points.size()-1].second) <= y_okr)
+        return true;
+    return false;
+}
+
+QVector<int> Figure::findChangeDirection(const vector_points &points)
+{
+    QVector<int> indexesChangeDirection;
+    QVector<QPair<double, double>> pointsSin = this->getSinVector(points);
+    int countChangeDirection = 0;
+    bool change_po_x = false;
+    bool change_direction = false;
+    bool oneMoreMinus = false;
+    for (int i = 0; i < pointsSin.size() - 4; i+=3)
+    {
+
+        for (int j = i; j < i + 4; j++)
+        {
+            if (change_po_x)
+            {
+                if (isEqual(pointsSin[j].first, pointsSin[j+1].first))
+                {
+                    if (!isEqual(pointsSin[j].second, pointsSin[j+1].second))
+                    {
+                        change_po_x = false;
+                        countChangeDirection++;
+                        //Запись индексов
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                if (isEqual(pointsSin[j].second, pointsSin[j+1].second))
+                {
+                    if (!isEqual(pointsSin[j].first, pointsSin[j+1].first))
+                    {
+                        change_po_x = true;
+                        countChangeDirection++;
+
+                        //запись индексов
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    qDebug() << countChangeDirection;
+    //это вынести в другую функцию, просто щас проверка
+    if (countChangeDirection >= 4)
+        qDebug() << "Я думаю, что это КРУГ!";
+    else if (countChangeDirection >= 3) {
+        qDebug() << "Я думаю, что это ПРЯМОУГОЛЬНИК!";
+    }
+    else if (countChangeDirection >= 2)
+        qDebug() << "Я думаю, что это ТРЕУГОЛЬНИК";
+    else {
+        qDebug() << "Я думаю, что это просто линия";
+    }
+    qDebug() << isolation(points);
+
+    return indexesChangeDirection;
+}
+
 QVector<QPair<int, int>> Figure::recognition(const QVector<QPair<int, int> > &points)
 {
     vector_points smooth_figure = smoothing(points);
     qDebug() << "11111111111111111111111111111111111111111111111111";
-    qDebug() << smooth_figure;
+    //qDebug() << smooth_figure;
+    this->findChangeDirection(smooth_figure);
+
     return smooth_figure;
 
     /*
      * нужно найти количество острых углов
      * по этим углам смотрим что за фигура
      * как то так
+     * если одна ось становиться наподвижной(считаем погрешность в сотую(тысячную)) а другая изменяется, то поменялось направление
+     * там где поменялось направление записываем индекс в какой нибудь массив, чтоб по этим точкам отстроить правильную фигуру(кроме круга)
+     * в случае с кругом, посчитаем точку центра примерную, и от нее что то будем делать
      *
      */
-//    recognitionDirection(points);
-//    //не найдена фигура, или мб это линия
-//    if (directionBegin.first == -1 || directionBegin.second == -1)
-//    {
-//        return points;
-//    }
-//    return points;
-//    for (int i = 0; i < points.size(); i++)
-//    {
-//        ;
-//    }
+
 }
 
 
@@ -64,8 +154,8 @@ vector_points Figure::smoothing(const vector_points &points)
     vector_points smooth_figure = points;
     if (points.size() == 1 || points.size() == 0)
         return points;
-    //сглаживание калмана (отлично выравнивает, но круг делает угловатым, может оно и к лучшему)
-    double coef_kalman = 0.1;
+    //сглаживание калмана
+    double coef_kalman = 0.11;
     int x_smooth_past = coef_kalman * points[0].first + (1 - coef_kalman) ;
     x_smooth_past = points[0].first;
     int y_smooth_past = coef_kalman * points[0].second + (1 - coef_kalman);
@@ -81,20 +171,6 @@ vector_points Figure::smoothing(const vector_points &points)
         y_smooth_past = y_smooth;
         smooth_figure[i] = smoothValue;
     }
-
-
-    //скользящая средняя взвешенная(плохо выравнивает)
-//    vector_points smooth_figure = points;
-//    for (int i = 1; i < points.size() - 1; i++)
-//    {
-//        QPair<int, int> smoothValue;
-//        int x_smooth = (points[i-1].first + 2 * points[i].first + points[i+1].first) / 4;
-//        int y_smooth = (points[i-1].second + 2 * points[i].second + points[i+1].second) / 4;
-//        smoothValue.first = x_smooth;
-//        smoothValue.second = y_smooth;
-//        smooth_figure[i] = smoothValue;
-
-//    }
     return smooth_figure;
 }
 
