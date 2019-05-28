@@ -35,8 +35,25 @@ void PaintScene::paintFigure(const QVector<QPair<int, int> > & points)
 
 }
 
+void PaintScene::paintCircle(const QVector<QPair<int, int>>& points)
+{
+    qDebug() << points;
+    for (int i = 0; i < points.size(); i++)
+    {
+        addLine(points[i].first, points[i].second, points[i].first + 1, points[i].second + 1,
+                QPen(Qt::black, 10, Qt::SolidLine, Qt::RoundCap));
+    }
+
+    if (points.size() == 2)
+    {
+        addEllipse(points[0].first, points[0].second, points[1].first, points[1].second, QPen(Qt::red,6,Qt::SolidLine,Qt::RoundCap));
+    }
+
+}
+
 void PaintScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
+
     // Отрисовываем линии с использованием предыдущей координаты
     addLine(previousPoint.x(),
             previousPoint.y(),

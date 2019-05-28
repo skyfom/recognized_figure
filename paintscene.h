@@ -14,6 +14,7 @@ public:
     explicit PaintScene(QObject *parent = nullptr);
     ~PaintScene();
     void paintFigure(const QVector<QPair<int, int>>&);
+    void paintCircle(const QVector<QPair<int, int>>& points);
 
 private:
     QPointF previousPoint;

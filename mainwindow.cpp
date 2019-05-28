@@ -34,7 +34,24 @@ void MainWindow::releaseMouseSlot(const QVector<QPair<int, int>>& points)
 {
     qDebug() << points;
     QVector<QPair<int, int>> newFig = fig->recognition(points);
-    this->paintFigure(newFig);
+    figure type = fig->getTypeFigure();
+
+    QFont font("Times", 14, QFont::Bold);
+    ui->isFigure->setFont(font);
+    if (type == figure::line)
+    {
+        ui->isFigure->setText("Линия");
+        return;
+    }
+    else if (type == figure::circle)
+        ui->isFigure->setText("Круг");
+    else if (type == figure::triangle)
+        ui->isFigure->setText("Треугольник");
+    else if (type == figure::rectangle)
+        ui->isFigure->setText("Прямоугольник");
+    scene->paintCircle(newFig);
+
+
 }
 
 MainWindow::~MainWindow()
