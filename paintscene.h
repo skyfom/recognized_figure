@@ -6,6 +6,9 @@
 #include <QDebug>
 #include <QPair>
 #include <QVector>
+#include "figure.h"
+
+//enum figure {rectangle, circle, line, triangle};
 
 class PaintScene : public QGraphicsScene
 {
@@ -13,7 +16,7 @@ class PaintScene : public QGraphicsScene
 public:
     explicit PaintScene(QObject *parent = nullptr);
     ~PaintScene();
-    void paintFigure(const QVector<QPair<int, int>>&);
+    void paintFigure(const QVector<QPair<int, int>>&points, figure fig);
     void paintCircle(const QVector<QPair<int, int>>& points);
 
 private:
@@ -28,6 +31,10 @@ private:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     QVector<QPair<int, int>> points;
+
+
+
+    QVector<QPointF> vecTemp;
 };
 
 #endif // PAINTSCENE_H

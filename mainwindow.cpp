@@ -14,13 +14,17 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(scene, SIGNAL(pressMouseSignal(QVector<QPair<int, int>>&)), this, SLOT(pressMouseSlot(QVector<QPair<int, int>>&)));
     connect(scene, SIGNAL(releaseMouseSignal(const QVector<QPair<int, int>>&)), this, SLOT(releaseMouseSlot(const QVector<QPair<int, int>>&)));
     timer->start(100);
+
+    QFont font("Times", 14, QFont::Bold);
+    ui->isFigure->setFont(font);
+     ui->isFigure->setText("");
     fig = new Figure();
 }
 
 void MainWindow::paintFigure(const QVector<QPair<int, int> > &points)
 {
     scene->clear();
-    scene->paintFigure(points);
+    //scene->paintFigure(points);
 }
 
 void MainWindow::pressMouseSlot(QVector<QPair<int, int>>& points)
@@ -32,12 +36,17 @@ void MainWindow::pressMouseSlot(QVector<QPair<int, int>>& points)
 
 void MainWindow::releaseMouseSlot(const QVector<QPair<int, int>>& points)
 {
-    qDebug() << points;
+   // qDebug() << points;
+    if (points.size()<6)
+    {
+          ui->isFigure->setText("Точка");
+          return;
+    }
     QVector<QPair<int, int>> newFig = fig->recognition(points);
+
     figure type = fig->getTypeFigure();
 
-    QFont font("Times", 14, QFont::Bold);
-    ui->isFigure->setFont(font);
+
     if (type == figure::line)
     {
         ui->isFigure->setText("Линия");
@@ -49,7 +58,11 @@ void MainWindow::releaseMouseSlot(const QVector<QPair<int, int>>& points)
         ui->isFigure->setText("Треугольник");
     else if (type == figure::rectangle)
         ui->isFigure->setText("Прямоугольник");
-    scene->paintCircle(newFig);
+    else if (type == figure::direct_triangle)
+        ui->isFigure->setText("Прямоугольный треугольник");
+    else if (type == figure::ufo)
+        ui->isFigure->setText("Неопознанная фигура");
+    scene->paintFigure(newFig, type);
 
 
 }
