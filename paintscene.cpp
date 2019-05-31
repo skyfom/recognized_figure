@@ -12,6 +12,7 @@ PaintScene::~PaintScene()
 
 void PaintScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+
     emit pressMouseSignal(this->points);
     // При нажатии кнопки мыши отрисовываем эллипс
     addEllipse(event->scenePos().x() ,
